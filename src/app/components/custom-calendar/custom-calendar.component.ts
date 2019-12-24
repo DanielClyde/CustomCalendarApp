@@ -4,15 +4,17 @@ import {
   ChangeDetectionStrategy,
   ViewChild,
   TemplateRef,
-  ChangeDetectorRef
+  ChangeDetectorRef,
 } from '@angular/core';
 import { Subject } from 'rxjs';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {
   CalendarEvent,
   CalendarEventAction,
   CalendarEventTimesChangedEvent,
   CalendarView
 } from 'angular-calendar';
+import { EditEventComponent } from '../edit-event/edit-event.component';
 
 interface ICalendarDay {
   date: Date;
@@ -51,20 +53,20 @@ export class CustomCalendarComponent implements OnInit {
   public CalendarView = CalendarView;
   public view = this.CalendarView.Month;
   public viewDate = new Date();
-  public activeDayIsOpen = true;
+  public activeDayIsOpen = false;
   public refresh = new Subject<any>();
   public actions: CalendarEventAction[] = [
     {
-      label: '<i class="fa fa-fw fa-pencil"></i>',
+      label: '<i class="fas fa-fw fa-edit"></i>',
       a11yLabel: 'Edit',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
+      onClick: ({event, sourceEvent}: {event: CalendarEvent, sourceEvent: MouseEvent | KeyboardEvent}): void => {
         this.handleEvent('Edited', event);
       }
     },
     {
-      label: '<i class="fa fa-fw fa-times"></i>',
+      label: '<i class="fas fa-fw fa-trash"></i>',
       a11yLabel: 'Delete',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
+      onClick: ({ event, sourceEvent }: { event: CalendarEvent, sourceEvent: MouseEvent | KeyboardEvent }): void => {
         this.events = this.events.filter(iEvent => iEvent !== event);
         this.handleEvent('Deleted', event);
       }
@@ -85,7 +87,9 @@ export class CustomCalendarComponent implements OnInit {
       draggable: true
     }];
 
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(
+    private cd: ChangeDetectorRef,
+    private modal: NgbModal) { }
 
   ngOnInit() {
   }
@@ -106,10 +110,27 @@ export class CustomCalendarComponent implements OnInit {
     console.log('EVENT');
     console.log(action);
     console.log(e);
+    if (action === 'Edited') {
+      const m = this.modal.open(EditEventComponent);
+      m.result.then(() => {
+        console.log('closed');
+      });
+    }
   }
 
-  public eventTimesChanged(e) {
-    console.log('EventTimesChanged');
-    console.log(e);
+  public eventTimesChanged(e: CalendarEventTimesChangedEvent) {
+    this.events = this.events.map((iEvent) => {
+      if (iEvent === e.event) {
+        return {
+          ...e.event,
+          start: e.newStart,
+          end: e.newEnd,
+          allDay: e.allDay
+        };
+      }
+      return iEvent;
+    });
+    this.activeDayIsOpen = false;
+    this.cd.markForCheck();
   }
 }
