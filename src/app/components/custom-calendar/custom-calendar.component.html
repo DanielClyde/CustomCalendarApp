@@ -1,6 +1,10 @@
 <mwl-calendar-month-view
 [viewDate]="viewDate"
->
+(dayClicked)="dayClicked($event.day)"
+[activeDayIsOpen]="activeDayIsOpen"
+[events]="events"
+(eventClicked)="handleEvent('Clicked', $event.event)"
+(eventTimesChanged)="eventTimesChanged($event)"
+[refresh]="refresh">
 
-</mwl-calendar-month-view
->
+</mwl-calendar-month-view>
