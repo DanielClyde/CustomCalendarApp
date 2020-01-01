@@ -8,7 +8,6 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/moment';
 import * as moment from 'moment';
 import { CustomCalendarComponent } from './custom-calendar.component';
-import { EditEventComponent } from '../edit-event/edit-event.component';
 
 export function momentAdapterFactory() {
   return adapterFactory(moment);
@@ -16,7 +15,6 @@ export function momentAdapterFactory() {
 
 @NgModule({
   declarations: [ CustomCalendarComponent ],
-  entryComponents: [EditEventComponent],
   imports: [
     BrowserModule,
     NgbModalModule,

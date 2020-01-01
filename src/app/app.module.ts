@@ -5,13 +5,11 @@ import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CustomCalendarModule } from './components/custom-calendar/custom-calendar.module';
-import { EditEventComponent } from './components/edit-event/edit-event.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    EditEventComponent,
   ],
   imports: [
     BrowserModule,
